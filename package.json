@@ -1,0 +1,37 @@
+{
+  "name": "rx-flux",
+  "description": "A set of utililities to implements a flux architecture with RxJS",
+  "version": "0.1.0",
+  "keywords": [
+    "react",
+    "flux",
+    "rx",
+    "rxjs"
+  ],
+  "main": "index.js",
+  "bugs": "https://github.com/fdecampredon/rx-flux/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fdecampredon/rx-flux/"
+  },
+  "scripts": {
+    "test": "tape test/*.js"
+  },
+  "author": {
+    "name": "François de Campredon",
+    "email": "francois.de.campredon@gmail.com",
+    "url": "https://github.com/fdecampredon"
+  },
+  "license": "Apache Version 2",
+  "dependencies": {
+    "node-uuid": "^1.4.1"
+  },
+  "peerDependencies": {
+    "rx": "^2.3.14"
+  },
+  "devDependencies": {
+    "sinon": "^1.11.1",
+    "tape": "^3.0.2",
+    "rx": "^2.3.14"
+  }
+}
