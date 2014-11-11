@@ -1,4 +1,4 @@
 module.exports = {
-  Store: require('store'),
-  Action: require('action')
+  Store: require('./lib/store'),
+  Action: require('./lib/action')
 };
