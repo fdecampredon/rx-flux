@@ -12,9 +12,6 @@ test('Store', function (t) {
     var store = new Store(value);
 
     t.ok(store instanceof Rx.Observable, 'it should produce an Rx Observable');
-    store.subscribe(function (val) {
-      t.equal(val, value, 'the value of the observer should be the value passed to constructor if that value is not a function'); 
-    });
         
   });
   
