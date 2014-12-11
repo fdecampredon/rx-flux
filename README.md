@@ -16,10 +16,10 @@ npm install rx-flux
 Difference with the Original Flux 
 ---------------------------------
 
-RxFlux shares more similiraties with [RefluxJS](https://github.com/spoike/refluxjs) than with the original architecture.
+RxFlux shares more similarities with [RefluxJS](https://github.com/spoike/refluxjs) than with the original architecture.
 
-* A stores is an [RxJS Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md) that *holds* a value
-* An actions is a function and an [RxJS Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md)
+* A store is an [RxJS Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md) that *holds* a value
+* An action is a function and an [RxJS Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md)
 * A store subscribes to an action and update accordingly its value.
 * There is no central dispatcher.
 
@@ -47,7 +47,7 @@ myStore.subscribe(function (value) {
 });
 ```
 
-It also exposes a method `applyOperation`, this method allows to apply a transformation over the value held by te store:
+It also exposes a method `applyOperation`, this method allows to apply a transformation over the value held by the store:
 ```javascript
 var myStore = new MyStore(['foo']);
 
@@ -101,13 +101,13 @@ it returns an object with 2 methods `confirm` and `cancel` used to respectively 
 
 * `applyOperation(operation: (value: any) => any, promise: Promise): void` : if you pass a promise as the second argument of `applyOperation` the operation will be confirmed or canceled when that promise is resolved or rejected.
 
-* `observe(observable: Rx.Observable<T>, handler: (val: t) => void): void`: a shortcut for `observable.subscribe(handler)`, however the resulting subscription will be automaticly disposed on store disposal.
+* `observe(observable: Rx.Observable<T>, handler: (val: t) => void): void`: a shortcut for `observable.subscribe(handler)`, however the resulting subscription will be automatically disposed on store disposal.
 
 You can also implements two *lifecycle* methods when *subclassing* the `Store`:
 * `init(): void`: this method will be called the first time an observer subscribes to your store, or when the store has been disposed and that a new observer subscribes to the store. <br/>
 this is generally the place where you will subscribe to actions.
 
-* `dispose(): void`: this method will be called whenever the store registred observers count fall down to 0.
+* `dispose(): void`: this method will be called whenever the store registered observers goes to 0.
 
 
 The Action
