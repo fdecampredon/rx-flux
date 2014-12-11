@@ -227,4 +227,4 @@ Action instance api:
 Examples :
 ----------
 
-Original examples from the [Flux](https://github.com/facebook/flux/) repository has been ported with rx-flux, see the `examples` directory at the root of the code source.
+Original examples from the [Flux](https://github.com/facebook/flux/) repository has been ported with rx-flux, see the [examples](https://github.com/fdecampredon/rx-flux/tree/master/examples/) directory.
