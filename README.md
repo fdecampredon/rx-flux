@@ -220,7 +220,7 @@ Creating an action:
 * `Action.create(map?: (val: A) => B): Rx.Observable<B> & (a: A) => B` : create a new action
 
 Action instance api: 
-* `waitFor(...observables: Rx.Observable[])`: Rx.Observable: create a new observable that waits that the observable passed as parameters publish a new value before notifying.
+* `waitFor(...observables: Rx.Observable[])`: Rx.Observable: create a new observable that waits that the observables passed as parameters publish a new value before notifying.
 * `hasObservers(): boolean`: returns true if the action has subscribed observers.
 
 
