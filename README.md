@@ -96,11 +96,14 @@ also the store will pass in a *pending* state and won't publish any value until 
 **this method will overwritte operations history**.
 
 * `applyOperation(operation: (value: any) => any): { confirm: () => void, cancel: () }` :
-this method takes has parameter a function that should implements a transformation over the store value.  
-**never directly mutate the store value, but return a new object.**
+this method takes has parameter a function that should implements a transformation over the store value.
 it returns an object with 2 methods `confirm` and `cancel` used to respectively 
 to confirm or cancel the operation.  
-**you need to confirm operations at some point to allow the store to free the internal history object, if you don't you are at risk of facing serious memory leak issues**.
+
+> Operation comes with some important usage rules: 
+* **In an operation, never directly mutate the store value, but return a new object.**
+* **You need to confirm operations at some point to allow the store to free the internal history object, if you don't you are at risk of facing serious memory leak issues.**
+* **Finally operations can be executed multiple times, so they should never have side-effect.**
 
 * `applyOperation(operation: (value: any) => any, true): void` : this overload allows to directly confirm the operation, equivalent of `applyOperation(...).confirm()`
 
