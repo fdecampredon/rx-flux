@@ -292,72 +292,81 @@ test('Store', function (t) {
       });
     });
     
-//    
-//    
-//
-    
-//
-//
-//        t.test('already canceled/confirmed operation', function (t) {
-//          var store = new Store([]);
-//          
-//          var operation1 = store.applyOperation(function (arr) {
-//            return arr.concat('foo');
-//          });
-//          operation1.cancel();
-//          
-//          var operation2 = store.applyOperation(function (arr) {
-//            return arr.concat('foo');
-//          });
-//          operation2.confirm();
-//
-//          t.plan(4);
-//
-//          t.throws(function () {
-//              operation1.cancel();
-//          }, 'an operation already canceled shoul throw an error when canceled again');
-//
-//
-//          t.throws(function () {
-//              operation1.confirm();
-//          }, 'an operation already canceled shoul throw an error when confirmed');
-//
-//
-//          t.throws(function () {
-//              operation2.cancel();
-//          }, 'an operation already confirmed shoul throw an error when canceled again');
-//
-//
-//          t.throws(function () {
-//              operation2.confirm();
-//          }, 'an operation already confirmed shoul throw an error when confirmed');
-//        });
-//    });
-//    
-//    t.test('lifecycle', function (t) {
-//      var store = new Store([]);
-//      t.plan(6);
-//      
-//      t.ok(store.lifecycle.init instanceof Rx.Observable, 'it should expose an init lifecycle observable');
-//      t.ok(store.lifecycle.dispose instanceof Rx.Observable, 'it should expose an dispose lifecycle observable');
-//      
-//      var initSpy = sinon.spy();
-//      
-//      store.lifecycle.init.subscribe(initSpy);
-//      
-//      var subscription1 = store.subscribe(function () {});
-//      t.ok(initSpy.calledOnce, 'the init lifecycle should notify on first subscription');
-//      var subscription2 = store.subscribe(function () {});
-//      t.ok(initSpy.calledOnce, 'the init lifecycle should notify on first subscription');
-//      
-//      
-//      var disposeSpy = sinon.spy();
-//      store.lifecycle.dispose.subscribe(disposeSpy);
-//      subscription1.dispose();
-//      t.ok(disposeSpy.notCalled, 'the dispose lifecycle should not be called while the store has active subscription');
-//      subscription2.dispose();
-//      t.ok(disposeSpy.calledOnce, 'the dispose lifecycle should be called after the last subscription has been disposed');
-//      
-//    });
+    t.test('lifecycle', function (t) {
+      
+      var initialValue = new Rx.Subject();
+      var initialValueSpy = sinon.spy(function () {
+        return initialValue;
+      });
+      
+      var operations = new Rx.Subject();
+      var operationsSpy = sinon.spy(function () {
+        return operations;
+      });
+      var store = Store.create({
+        getInitialValue: initialValueSpy,
+        getOperations: operationsSpy
+      });
+      
+      t.ok(
+        !initialValueSpy.called && !operationsSpy.called, 
+        'before subscription getInitialValue and getOperatons should not have been called'
+      );
+      
+      var disposable = store.subscribe(function() {});
+      
+      t.ok(
+        initialValueSpy.called && initialValue.hasObservers(),
+        'on the first subscription the store should get the initialValue and subscribe to the returned obserbvable'
+      );
+      
+      t.ok(
+        !operationsSpy.called, 
+        'until initialValue observable push a new value getOperations should not have been called'
+      );
+      
+      initialValue.onNext({});
+      
+      t.ok(
+        operationsSpy.called && operations.hasObservers(), 
+        'when the initialValue resolve to a value operations spy should have been called '
+      );
+      
+      var oldOperations = operations;
+      operations = new Rx.Subject();
+      
+      initialValue.onNext({});
+      
+      t.ok(
+        operationsSpy.calledTwice && operations.hasObservers() && !oldOperations.hasObservers(), 
+        'when the initialValue push a newvalue the store shoul dispose the subscription to operations, ' +
+        'reinvoke getOperations and subscribe to the returned observable'
+      );
+      
+      disposable.dispose();
+      
+      t.ok(
+        !initialValue.hasObservers() && !operations.hasObservers(),
+        'when all the subscription to the store has been disposed, it should dispose the subscription on ' + 
+        'operations and initialValue'
+      );
+      
+      store.subscribe(function () {});
+      
+      t.ok(
+        initialValueSpy.calledTwice && initialValue.hasObservers() &&
+        operationsSpy.calledTwice && !operations.hasObservers(),
+        'on resubscribe it should restart the process'
+      );
+      
+      initialValue.onNext({});
+      
+      t.ok(
+        operationsSpy.calledThrice  && operations.hasObservers(),
+        'on resubscribe it should restart the process'
+      );
+      
+      t.end();
+    });
   });
 });
