@@ -1,7 +1,7 @@
 {
   "name": "rx-flux",
   "description": "A set of utililities to implements a flux architecture with RxJS",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "keywords": [
     "react",
     "flux",
