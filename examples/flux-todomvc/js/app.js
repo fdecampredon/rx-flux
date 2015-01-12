@@ -7,21 +7,13 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+Object.assign = require('object-assign');
+
 var React = require('react');
+var TodoApp = require('./components/todoApp');
+var TodoService = require('./services/todoService');
 
-var TodoApp = require('./components/TodoApp.react');
-var TodoStore = require('./stores/TodoStore');
-
-var todoStore = new TodoStore();
-
+React.render(<TodoApp />, document.getElementById('todoapp'));
 
 
-
-React.withContext({
-  todoStore: todoStore
-}, function () {
-  React.render(
-    <TodoApp />,
-    document.getElementById('todoapp')
-  );
-});
+TodoService.init();

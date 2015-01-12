@@ -1,24 +1,15 @@
-/*
- * Copyright (c) 2014, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * TodoStore
- */
 
-var TodoActions = require('../actions/TodoActions');
 var Store = require('rx-flux').Store;
-var assign = require('object-assign');
+var Rx = require('rx');
+var TodoService = require('../services/todoService');
+var TodoActions = require('../actions/todoActions');
 
-
+    
 function updateTodos(todos, update, condition) {
   return Object.keys(todos).reduce(function (result, id) {
     var todo = todos[id];
     if (!condition || condition(todo)) {
-      result[id] = assign({}, todo, update);
+      result[id] = { ...todo, ...update};
     } else {
       result[id] = todo;
     }
@@ -26,88 +17,97 @@ function updateTodos(todos, update, condition) {
   }, {});
 }
 
-function TodoStore() {
-  Store.call(this);
-  this.setValue({});
-}
 
-TodoStore.prototype = Object.create(Store.prototype);
-
-assign(TodoStore.prototype, {
-  constructor: TodoStore,
+var TodoStore = Store.create({
+  getInitialValue() {
+    return TodoService.getTodos();
+  },
   
-  init: function () {
-    var store = this;
-    
-    
-    store.observe(TodoActions.create, function (text) {
-      store.applyOperation(function (todos) {
-        todos = assign({}, todos);
-        
-        var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
-        todos[id] = {
-          id: id,
-          complete: false,
-          text: text
-        };
-        return todos;
-      }, true);
-    });
-    
-    store.observe(TodoActions.toggleCompleteAll, function () {
-      store.applyOperation(function (todos) {
-        var allCompleted = Object.keys(todos).every(function (id) {
-          return todos[id].complete;
-        });
-        
-        return updateTodos(todos, {complete: !allCompleted}, function (todo) {
-          return todo.complete === allCompleted;
-        });
-      }, true);
-    });
-    
-    
-    store.observe(TodoActions.toggleComplete, function (id) {
-      store.applyOperation(function (todos) {
-        return updateTodos(todos, {complete: !todos[id].complete}, function (todo) {
-          return todo.id === id;
-        });
-      }, true);
-    });
-    
-    store.observe(TodoActions.updateText, function (update) {
-      var id = update.id;
-      var text = update.text;
-      store.applyOperation(function (todos) {
-        return updateTodos(todos, {text: text}, function (todo) {
-          return todo.id === id;
-        });
-      });
-    });
-    
-    
-    store.observe(TodoActions.destroy, function (id) {
-      store.applyOperation(function (todos) {
-        todos = assign({}, todos);
-        delete todos[id];
-        return todos;
-      }, true);
-    });
-    
-    
-    store.observe(TodoActions.destroyCompleted, function () {
-      store.applyOperation(function (todos) {
-        return Object.keys(todos).reduce(function (result, id) {
-          var todo = todos[id];
-          if (!todo.complete) {
-            result[id] = todo;
-          }
-          return result;
-        }, {});
-      });
-    });
-  }
+  getOperations() {
+    return Rx.Observable.merge(
 
+      TodoActions.create
+        .map(function ({todo, promise}) {
+          return {
+            transform: function (todos) {
+              todos = {...todos};
+              todos[todo.id] =  todo;
+              return todos;
+            },
+            confirm: promise
+          };
+        }),
+
+      TodoActions.toggleCompleteAll
+        .map(function ({promise}) {
+          return {
+            transform: function (todos) {
+              var allCompleted = Object.keys(todos).every(id => todos[id].complete);
+
+              return updateTodos(
+                todos, 
+                { complete: !allCompleted }, 
+                todo => todo.complete === allCompleted
+              );
+            },
+            confirm: promise
+          };
+        }),
+
+      TodoActions.toggleComplete
+        .map(function({id, promise}) {
+          return {
+            transform: todos => 
+              updateTodos(
+                todos, 
+                { complete: !todos[id].complete }, 
+                todo => todo.id === id
+              ),
+            confirm: promise
+          };
+        }),
+
+      TodoActions.updateText
+        .map(function ({id, text, promise}) {
+          return {
+            transform: todos => 
+              updateTodos(
+                todos, 
+                { text }, 
+                todo => todo.id === id
+              ),
+            confirm: promise
+          };
+        }),
+
+      TodoActions.destroy
+        .map(function({id, promise}) {
+          return {
+            transform: function (todos) {
+              todos = {... todos};
+              delete todos[id];
+              return todos;
+            },
+            confirm: promise
+          };
+        }),
+
+      TodoActions.destroyCompleted
+        .map(function ({promise}) {
+          return {
+            transform: todos =>
+              Object.keys(todos).reduce(function (result, id) {
+                var todo = todos[id];
+                if (!todo.complete) {
+                  result[id] = todo;
+                }
+                return result;
+              }, {}),
+            confirm: promise
+          };
+        })
+    );
+  }
 });
 
 module.exports = TodoStore;
