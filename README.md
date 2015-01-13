@@ -98,8 +98,7 @@ The `Store` *class* inherits from [`Rx.Observable`](https://github.com/Reactive-
 
 * `setValue(value: any | Promise): void` : set the value held by the store.  
 If you pass a `Promise` to this method the value will be set to whatever the promise resolve to, 
-also the store will pass in a *pending* state and won't publish any value until the promise is resolved.  
-**this method will overwritte operations history**.
+also the store will pass in a *pending* state and won't publish any value until the promise is resolved. **This method will overwrite operations history**.
 
 * `applyOperation(operation: (value: any) => any): { confirm: () => void, cancel: () }` :
 this method takes has parameter a function that should implements a transformation over the store value.
