@@ -81,10 +81,10 @@ operation1.cancel();
 console.log(myStore.getValue()); // ['bar']
 
 ```
-This mechanism offers the possibility to revert the state of your application in case of failed server request, or to implements an undo/redo system.
+This mechanism offers the possibility to revert the state of your application in case of failed server request, or to implement an undo/redo system.
 
 
-> There is 3 important rules to respect when you are using the operation system: 
+> There are 3 important rules to respect when you are using the operation system: 
 * **In an operation, never directly mutate the store value, but return a new object.**
 * **You need to confirm operations at some point to allow the store to free the internal history object, if you don't you are at risk of facing serious memory leak issues.**
 * **Finally operations can be executed multiple times, so they should never have side-effect.**
