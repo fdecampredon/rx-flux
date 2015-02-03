@@ -81,7 +81,7 @@ operation1.cancel();
 console.log(myStore.getValue()); // ['bar']
 
 ```
-This mechanism offers the possibility to revert the state of your application in case of failed server request, or to implements an undo/redo system.
+This mechanism offers the possibility to revert the state of your application in case of failed server request, or to implement an undo/redo system.
 
 
 > There is 3 important rules to respect when you are using the operation system: 
