@@ -3,7 +3,7 @@ RxFlux
 
 > A [Flux](https://github.com/facebook/flux/) architecture implementation based on [RxJS](https://github.com/Reactive-Extensions/RxJS)
 
-The [Flux](https://github.com/facebook/flux/) architecture allows you to think your application as an unidirectional flow of data, this module aims to facilitate the use of [RxJS Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md) as basis for defining the relations between the different entities composing your application.
+The [Flux](https://github.com/facebook/flux/) architecture allows you to think of your application as an unidirectional flow of data. This module aims to facilitate the use of [RxJS Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md) as basis for defining the relations between the different entities composing your application.
 
 Instalation
 -----------
@@ -20,7 +20,7 @@ RxFlux shares more similarities with [RefluxJS](https://github.com/spoike/reflux
 
 * A store is an [RxJS Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md) that *holds* a value
 * An action is a function and an [RxJS Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md)
-* A store subscribes to an action and update accordingly its value.
+* A store subscribes to an action and updates its value accordingly.
 * There is no central dispatcher.
 
 Store
@@ -47,7 +47,7 @@ myStore.subscribe(function (value) {
 });
 ```
 
-It also exposes a method `applyOperation`, this method allows to apply a transformation over the value held by the store:
+It also exposes a method `applyOperation`, and this method can be used to apply a transformation over the value held by the store:
 ```javascript
 var myStore = new MyStore(['foo']);
 
@@ -81,40 +81,39 @@ operation1.cancel();
 console.log(myStore.getValue()); // ['bar']
 
 ```
-This mechanism offers the possibility to revert the state of your application in case of failed server request, or to implements an undo/redo system.
+This mechanism offers the possibility to revert the state of your application in case of failed server request, or to implement an undo/redo system.
 
 
-> There is 3 important rules to respect when you are using the operation system: 
+> There are 3 important rules to respect when you are using the operation system: 
 * **In an operation, never directly mutate the store value, but return a new object.**
-* **You need to confirm operations at some point to allow the store to free the internal history object, if you don't you are at risk of facing serious memory leak issues.**
+* **You need to confirm operations at some point to allow the store to free the internal history object. If you don't, you are at risk of facing serious memory leak issues.**
 * **Finally operations can be executed multiple times, so they should never have side-effect.**
 
 
 ###Api
 
-The `Store` *class* inherits from [`Rx.Observable`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md), it also exposes the following methods:
+The `Store` *class* inherits from [`Rx.Observable`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md), and it also exposes the following methods:
 
 * `getValue(): any` : returns the value held by the store.
 
 * `setValue(value: any | Promise): void` : set the value held by the store.  
-If you pass a `Promise` to this method the value will be set to whatever the promise resolve to, 
-also the store will pass in a *pending* state and won't publish any value until the promise is resolved.  
-**this method will overwritte operations history**.
+If you pass a `Promise` to this method the value will be set to whatever the promise resolves to. 
+Also the store will pass in a *pending* state and won't publish any value until the promise is resolved.  
+**this method will overwrite operations history**.
 
 * `applyOperation(operation: (value: any) => any): { confirm: () => void, cancel: () }` :
-this method takes has parameter a function that should implements a transformation over the store value.
-it returns an object with 2 methods `confirm` and `cancel` used to respectively 
-to confirm or cancel the operation.  
+this method takes a function that should implement a transformation over the store value as a parameter.
+It returns an object with 2 methods `confirm` and `cancel` used to respectively confirm or cancel the operation.  
 
-* `applyOperation(operation: (value: any) => any, true): void` : this overload allows to directly confirm the operation, equivalent of `applyOperation(...).confirm()`
+* `applyOperation(operation: (value: any) => any, true): void` : this overload allows you to directly confirm the operation, equivalent of `applyOperation(...).confirm()`
 
 * `applyOperation(operation: (value: any) => any, promise: Promise): void` : if you pass a promise as the second argument of `applyOperation` the operation will be confirmed or canceled when that promise is resolved or rejected.
 
 * `observe(observable: Rx.Observable<T>, handler: (val: t) => void): void`: a shortcut for `observable.subscribe(handler)`, however the resulting subscription will be automatically disposed on store disposal.
 
-You can also implements two *lifecycle* methods when *subclassing* the `Store`:
+You can also implement two *lifecycle* methods when *subclassing* the `Store`:
 * `init(): void`: this method will be called the first time an observer subscribes to your store, or when the store has been disposed and that a new observer subscribes to the store.  
-this is generally the place where you will subscribe to actions.
+This is generally the place where you will subscribe to actions.
 
 * `dispose(): void`: this method will be called whenever the store registered observers goes to 0.
 
