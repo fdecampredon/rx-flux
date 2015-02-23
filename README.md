@@ -7,9 +7,11 @@ The [Flux](https://github.com/facebook/flux/) architecture allows you to think y
 
 Instalation
 -----------
+> This package is still highly experimental, see [#10](https://github.com/fdecampredon/rx-flux/issues/10). Until it's finalized and published, use git url to install it with npm.
+
 RxFlux can be retrieved as an npm package :
 ```
-npm install rx-flux
+npm install fdecampredon/rx-flux
 ```
 
 
