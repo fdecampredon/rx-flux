@@ -5,7 +5,7 @@ RxFlux
 
 The [Flux](https://github.com/facebook/flux/) architecture allows you to think your application as an unidirectional flow of data, this module aims to facilitate the use of [RxJS Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md) as basis for defining the relations between the different entities composing your application.
 
-Instalation
+Installation
 -----------
 > This package is still highly experimental, see [#10](https://github.com/fdecampredon/rx-flux/issues/10). Until it's finalized and published, use git url to install it with npm.
 
