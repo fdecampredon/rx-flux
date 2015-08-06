@@ -27,7 +27,7 @@
     "node-uuid": "^1.4.1"
   },
   "peerDependencies": {
-    "rx": "^2.3.14"
+    "rx": "^3.0.0"
   },
   "devDependencies": {
     "bluebird": "^2.5.3",
