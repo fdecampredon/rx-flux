@@ -28,7 +28,7 @@ RxFlux shares more similarities with [RefluxJS](https://github.com/spoike/reflux
 Store
 -----
 
-###Usage
+### Usage
 
 A `Store` is an [RxJS Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md) :
 ```javascript
@@ -92,7 +92,7 @@ This mechanism offers the possibility to revert the state of your application in
 * **Finally operations can be executed multiple times, so they should never have side-effect.**
 
 
-###Api
+### Api
 
 The `Store` *class* inherits from [`Rx.Observable`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md), it also exposes the following methods:
 
@@ -124,7 +124,7 @@ this is generally the place where you will subscribe to actions.
 Action
 ------
 
-###Usage
+### Usage
 
 An action is a function and an [RxJS Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md), each time you call the action function it will propagate a new value: 
 
@@ -220,7 +220,7 @@ myAction.subscribe(function () {
 myAction();// logs: 'handler 1', 'handler 3', 'handler 2'
 ```
 
-###Api
+### Api
 
 Creating an action:
 * `Action.create(map?: (val: A) => B): Rx.Observable<B> & (a: A) => B` : create a new action
